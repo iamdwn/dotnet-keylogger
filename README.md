@@ -17,9 +17,9 @@ Xây dựng nhằm phục vụ mục đích học tập về:
 > Project chỉ để nghiên cứu kỹ thuật. Không được sử dụng để theo dõi trái phép người khác.  
 > Hành vi này có thể dẫn đến hậu quả pháp lý nghiêm trọng.
 > Phần mềm chỉ được sử dụng cho:
-   - Nghiên cứu cá nhân,
-   - Thử nghiệm kỹ thuật hook input,
-   - Học cách xử lý event bàn phím trong .NET.
+   > Nghiên cứu cá nhân,
+   > Thử nghiệm kỹ thuật hook input,
+   > Học cách xử lý event bàn phím trong .NET.
 
 ---
 
