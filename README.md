@@ -16,7 +16,7 @@ Xây dựng nhằm phục vụ mục đích học tập về:
 > **Lưu ý đạo đức & pháp lý:**  
 > Project chỉ để nghiên cứu kỹ thuật. Không được sử dụng để theo dõi trái phép người khác.  
 > Hành vi này có thể dẫn đến hậu quả pháp lý nghiêm trọng.<br>
-> Phần mềm chỉ được sử dụng cho:<br>
+> Phần mềm chỉ được sử dụng cho:<br><br>
    > Nghiên cứu cá nhân,<br>
    > Thử nghiệm kỹ thuật hook input,<br>
    > Học cách xử lý event bàn phím trong .NET.
