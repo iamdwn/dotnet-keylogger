@@ -58,6 +58,9 @@ Xây dựng nhằm phục vụ mục đích học tập về:
 
 ```bash
 git clone https://github.com/iamdwn/keylogger.git
+```bash
 cd keylogger
+```bash
 dotnet build
+```bash
 dotnet run
