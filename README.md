@@ -1,7 +1,7 @@
 # .NET Keylogger
 
 Dự án này minh họa cách cài đặt Low-Level Keyboard Hook trong Windows bằng C#,
-sử dụng thư viện `user32.dll` để bắt sự kiện phím toàn hệ thống,
+sử dụng thư viện `user32.dll` để bắt sự kiện phím toàn hệ thống.
 Xây dựng nhằm phục vụ mục đích học tập về:
 
 - Windows API hook bàn phím
